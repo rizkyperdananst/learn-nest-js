@@ -1,41 +1,59 @@
-import { Controller, Get, HttpCode, Post, Req, Res } from "@nestjs/common";
+import { Controller, Get, HttpCode, Param, Post, Req, Res } from '@nestjs/common';
 
 let heros = [
-    {
-        id: 1,
-        name: 'Naruto',
-        type: 'Rival',
-    },
-    {
-        id: 2,
-        name: 'Sasuke',
-        type: 'Rival',
-    }
+  {
+    id: 1,
+    name: 'Naruto',
+    type: 'Rival',
+  },
+  {
+    id: 2,
+    name: 'Sasuke',
+    type: 'Rival',
+  },
 ];
 
 @Controller('hero') // ini namanya decorator
 export class HeroController {
-    @Get("index") // hero/index
-    @HttpCode(200)
-    index(@Res() response) {
-        response.json(heros);
-        // return 'Hero index'
-        // return {
-        //     title: 'Hero index'
-        // }
-    }
+  @Get('index') // hero/index
+  @HttpCode(200)
+  index(@Res() response) {
+    response.json(heros);
+    // return 'Hero index'
+    // return {
+    //     title: 'Hero index'
+    // }
+  }
 
-    @Get("create")
-    create(@Res({ passthrough: true }) response): string {
-        response.cookie('name', 'rizky');
-        return 'Hero create';
-    }
+  @Get('show/:id')
+  show(@Param() params) {
+    return `params : ${params.id}`
+  }
 
-    @Post("store")
-    store(@Req() request, @Res() response) {
+  @Get('welcome')
+//   @Headers()
+//   @Redirect('https://nestjs.com')
+  welcome(@Res() response) {
+    response.redirect('https://nestjs.com')
+    // return 'Welcome gaysss';
+  }
+
+  @Get('create')
+  create(@Res({ passthrough: true }) response): string {
+    response.cookie('name', 'rizky');
+    return 'Hero create';
+  }
+
+  @Post('store')
+  @HttpCode(201)
+  store(@Req() request, @Res() response) {
+    try {
         const { id, name, type } = request.body;
-        heros.push({ id, name, type });
-        return response.json(heros);
-        // response.status(201).json(request.body);
+    heros.push({ id, name, type });
+    return response.json(heros);
+    } catch (error) {
+        response.status(2001).json({ message: error });
     }
+    // response.status(201).json(request.body);
+  }
 }
