@@ -1,4 +1,5 @@
-import { Controller, Get, HttpCode, Param, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, Req, Res } from '@nestjs/common';
+import { CreateHeroDto } from './dto/create-hero.dto';
 
 let heros = [
   {
@@ -46,7 +47,7 @@ export class HeroController {
 
   @Post('store')
   @HttpCode(201)
-  store(@Req() request, @Res() response) {
+  store(@Req() request, @Body() CreateHeroDto: CreateHeroDto, @Res() response) {
     try {
         const { id, name, type } = request.body;
     heros.push({ id, name, type });
